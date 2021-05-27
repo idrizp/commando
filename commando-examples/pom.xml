@@ -14,7 +14,7 @@
   </modules>
 
   <groupId>me.idriz.commando.examples</groupId>
-  <artifactId>examples-parent</artifactId>
+  <artifactId>commando-examples</artifactId>
 
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
