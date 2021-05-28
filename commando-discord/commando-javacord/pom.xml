@@ -5,7 +5,7 @@
   <parent>
     <artifactId>commando-discord</artifactId>
     <groupId>me.idriz.commando</groupId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.2-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -20,7 +20,7 @@
     <dependency>
       <groupId>me.idriz.commando</groupId>
       <artifactId>commando-core</artifactId>
-      <version>1.2.1-SNAPSHOT</version>
+      <version>1.2.2-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.jetbrains</groupId>
