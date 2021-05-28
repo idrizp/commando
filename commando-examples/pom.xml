@@ -5,13 +5,14 @@
   <parent>
     <artifactId>commando-parent</artifactId>
     <groupId>me.idriz.commando</groupId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>1.2.4-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <packaging>pom</packaging>
   <modules>
     <module>paper-example</module>
     <module>javacord-example</module>
+      <module>jda-example</module>
   </modules>
 
   <groupId>me.idriz.commando.examples</groupId>

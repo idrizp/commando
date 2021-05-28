@@ -3,31 +3,36 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
-    <artifactId>commando-parent</artifactId>
-    <groupId>me.idriz.commando</groupId>
+    <artifactId>commando-examples</artifactId>
+    <groupId>me.idriz.commando.examples</groupId>
     <version>1.2.4-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>commando-paper</artifactId>
+  <artifactId>jda-example</artifactId>
   <repositories>
     <repository>
-      <id>papermc</id>
-      <url>https://papermc.io/repo/repository/maven-public/</url>
+      <id>dv8tion</id>
+      <name>m2-dv8tion</name>
+      <url>https://m2.dv8tion.net/releases</url>
     </repository>
   </repositories>
 
   <dependencies>
     <dependency>
+      <groupId>net.dv8tion</groupId>
+      <artifactId>JDA</artifactId>
+      <version>4.2.1_253</version>
+    </dependency>
+    <dependency>
       <groupId>me.idriz.commando</groupId>
-      <artifactId>commando-core</artifactId>
+      <artifactId>commando-jda</artifactId>
       <version>1.2.4-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>com.destroystokyo.paper</groupId>
-      <artifactId>paper-api</artifactId>
-      <version>1.16.5-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>21.0.0</version>
     </dependency>
   </dependencies>
 
