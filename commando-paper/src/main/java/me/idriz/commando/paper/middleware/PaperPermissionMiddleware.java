@@ -1,7 +1,6 @@
 package me.idriz.commando.paper.middleware;
 
 import java.lang.reflect.Method;
-import me.idriz.commando.middleware.CommandMiddleware.SenderCommandMiddleware;
 import me.idriz.commando.paper.command.PaperCommand;
 import me.idriz.commando.paper.command.PaperCommand.Permission;
 import me.idriz.commando.paper.sender.PaperSender;
@@ -11,7 +10,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.jetbrains.annotations.NotNull;
 
-public class PaperPermissionMiddleware implements SenderCommandMiddleware<PaperSender> {
+public class PaperPermissionMiddleware implements PaperCommandMiddleware {
 	
 	private TextComponent noPermissionMessage = Component.text("No permission.", NamedTextColor.RED);
 	

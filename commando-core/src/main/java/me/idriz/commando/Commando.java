@@ -128,6 +128,13 @@ public abstract class Commando {
 		return wrapper;
 	}
 	
+	public Commando registerCommands(Command... commands) {
+		for (Command command : commands) {
+			registerCommand(command);
+		}
+		return this;
+	}
+	
 	public Map<String, Command> getCommands() {
 		return Map.copyOf(commands);
 	}

@@ -1,8 +1,6 @@
 package me.idriz.commando.paper.middleware;
 
 import java.lang.reflect.Method;
-import me.idriz.commando.middleware.CommandMiddleware.SenderCommandMiddleware;
-import me.idriz.commando.paper.message.PaperMessage;
 import me.idriz.commando.paper.sender.PaperSender;
 import me.idriz.commando.wrapper.CommandWrapper;
 import net.kyori.adventure.text.Component;
@@ -13,7 +11,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class PaperSenderMiddleware implements SenderCommandMiddleware<PaperSender> {
+public class PaperSenderMiddleware implements PaperCommandMiddleware {
 	
 	private TextComponent nonConsoleSenderOnly = Component.text("This command can only be run by a non-console command sender.", NamedTextColor.RED);
 	private TextComponent consoleSenderOnly = Component.text("This command can only be run by console.", NamedTextColor.RED);
