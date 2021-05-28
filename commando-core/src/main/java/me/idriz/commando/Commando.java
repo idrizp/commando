@@ -26,7 +26,7 @@ public abstract class Commando {
 	private final Map<Class<? extends TypeAdapter<?, ?>>, TypeAdapter<?, ?>> customAdapters = new HashMap<>();
 	
 	private final Map<Class<? extends CommandMiddleware>, CommandMiddleware> middlewareMap = new HashMap<>();
-	private final List<Class<? extends CommandMiddleware>> defaultMiddlewareChain = new ArrayList<>();
+	private final List<CommandMiddleware> defaultMiddlewareChain = new ArrayList<>();
 	
 	public Commando() {
 		registerTypeAdapter(Integer.class, new IntegerTypeAdapter<>(this));
@@ -48,7 +48,7 @@ public abstract class Commando {
 		return Map.copyOf(middlewareMap);
 	}
 	
-	public List<Class<? extends CommandMiddleware>> getDefaultMiddlewareChain() {
+	public List<CommandMiddleware> getDefaultMiddlewareChain() {
 		return List.copyOf(defaultMiddlewareChain);
 	}
 	
@@ -90,13 +90,32 @@ public abstract class Commando {
 			throw new IllegalStateException(
 					"Couldn't find middleware of class " + clazz + ". Are you sure it's registered?");
 		}
-		defaultMiddlewareChain.add(clazz);
+		defaultMiddlewareChain.add(middleware);
+		return this;
+	}
+	
+	public <T extends CommandMiddleware> Commando use(@NotNull T middleware, boolean register) {
+		if (register) {
+			registerMiddleware(middleware);
+		}
+		defaultMiddlewareChain.add(middleware);
 		return this;
 	}
 	
 	public <T extends CommandMiddleware> Commando use(@NotNull T middleware) {
-		registerMiddleware(middleware);
-		use(middleware.getClass());
+		use(middleware, true);
+		return this;
+	}
+	
+	public Commando use(boolean register, @NotNull CommandMiddleware... middlewares) {
+		for (CommandMiddleware middleware : middlewares) {
+			use(middleware, register);
+		}
+		return this;
+	}
+	
+	public Commando use(@NotNull CommandMiddleware... middlewares) {
+		use(true, middlewares);
 		return this;
 	}
 	

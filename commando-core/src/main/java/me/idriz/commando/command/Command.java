@@ -39,7 +39,7 @@ public interface Command {
 	}
 	
 	@NotNull
-	default List<Class<? extends CommandMiddleware>> getMiddleware() {
+	default List<CommandMiddleware> getMiddleware() {
 		return Collections.emptyList();
 	}
 	

@@ -9,9 +9,6 @@ import me.idriz.commando.wrapper.CommandWrapper;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class PaperPermissionMiddleware implements SenderCommandMiddleware<PaperSender> {
@@ -35,8 +32,11 @@ public class PaperPermissionMiddleware implements SenderCommandMiddleware<PaperS
 			@NotNull Runnable nextFunction
 	) {
 		String permission = null;
-		if (commandWrapper.getCommand() instanceof PaperCommand paperCommand && paperCommand.getPermission() != null) {
-			permission = paperCommand.getPermission();
+		if (commandWrapper.getCommand() instanceof PaperCommand) {
+			PaperCommand paperCommand = (PaperCommand)commandWrapper.getCommand();
+			if (paperCommand.getPermission() != null) {
+				permission = paperCommand.getPermission();
+			}
 		}
 		
 		PaperCommand.Permission annotation = null;

@@ -6,13 +6,11 @@ import me.idriz.commando.Commando;
 import me.idriz.commando.command.Command;
 import me.idriz.commando.command.backing.ExecutorBackingCommand;
 import me.idriz.commando.message.Message;
-import me.idriz.commando.paper.message.PaperMessage;
 import me.idriz.commando.paper.message.PaperMessageBuilder;
 import me.idriz.commando.paper.middleware.PaperPermissionMiddleware;
 import me.idriz.commando.paper.middleware.PaperSenderMiddleware;
 import me.idriz.commando.paper.sender.PaperSender;
 import me.idriz.commando.wrapper.CommandWrapper;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -26,8 +24,10 @@ public class PaperCommando extends Commando {
 		super();
 		
 		this.plugin = plugin;
-		use(new PaperSenderMiddleware());
-		use(new PaperPermissionMiddleware());
+		use(
+				new PaperSenderMiddleware(),
+				new PaperPermissionMiddleware()
+		);
 	}
 	
 	@Override

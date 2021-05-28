@@ -24,4 +24,8 @@ public class JavaCordMessage implements Message {
 	public void setColor(int red, int green, int blue) {
 		// You can't set colors of messages in JavaCord.
 	}
+	
+	public MessageBuilder getMessageBuilder() {
+		return messageBuilder;
+	}
 }

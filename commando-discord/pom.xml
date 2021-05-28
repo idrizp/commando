@@ -5,7 +5,7 @@
   <parent>
     <artifactId>commando-parent</artifactId>
     <groupId>me.idriz.commando</groupId>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.2-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -14,10 +14,5 @@
   <modules>
     <module>commando-javacord</module>
   </modules>
-
-  <properties>
-    <maven.compiler.source>16</maven.compiler.source>
-    <maven.compiler.target>16</maven.compiler.target>
-  </properties>
 
 </project>

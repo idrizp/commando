@@ -9,12 +9,6 @@ import org.jetbrains.annotations.Nullable;
 
 public interface CommandMiddleware {
 	
-	interface CommandLineCommandMiddleware extends CommandMiddleware {
-		
-		void onExecute(@NotNull CommandWrapper commandWrapper, @NotNull String[] args, @NotNull MiddlewareContext context,
-				@NotNull Runnable nextFunction);
-	}
-	
 	interface SenderCommandMiddleware<T extends CommandoSender<?>> extends CommandMiddleware {
 		
 		void onExecute(@NotNull CommandWrapper commandWrapper, @NotNull T sender, @NotNull String[] args,

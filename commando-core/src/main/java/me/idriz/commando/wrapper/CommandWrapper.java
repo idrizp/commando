@@ -37,8 +37,8 @@ public class CommandWrapper {
 	
 	private final Map<Character, Integer> flags;
 	
-	private final List<Class<? extends CommandMiddleware>> middleware;
-	private final List<Class<? extends CommandMiddleware>> inheritedMiddleware;
+	private final List<CommandMiddleware> middleware;
+	private final List<CommandMiddleware> inheritedMiddleware;
 	
 	private final boolean subCommand;
 	
@@ -55,8 +55,8 @@ public class CommandWrapper {
 			@Nullable Method method,
 			@NotNull Map<String, CommandWrapper> subCommands,
 			@NotNull Map<Character, Integer> flags,
-			@NotNull List<Class<? extends CommandMiddleware>> middleware,
-			@NotNull List<Class<? extends CommandMiddleware>> inheritedMiddleware,
+			@NotNull List<CommandMiddleware> middleware,
+			@NotNull List<CommandMiddleware> inheritedMiddleware,
 			boolean subCommand
 	) {
 		this.commando = commando;
@@ -127,11 +127,11 @@ public class CommandWrapper {
 		
 		this.inheritedMiddleware = new ArrayList<>();
 		if (parentCommand != null) {
-			inheritedMiddleware.addAll(getMiddleware(parentCommand));
+			inheritedMiddleware.addAll(getMiddleware(commando, parentCommand));
 		}
 		
 		this.middleware = new ArrayList<>();
-		middleware.addAll(getMiddleware(command));
+		middleware.addAll(getMiddleware(commando, command));
 		
 		this.subCommand = subCommand;
 		if (method != null) {
@@ -159,8 +159,8 @@ public class CommandWrapper {
 				// TODO: Implement nested subcommands
 				new HashMap<>(),
 				getFlags(subCommandMethod),
-				getMiddleware(parentCommand),
-				getMiddleware(subCommandMethod),
+				getMiddleware(commando, parentCommand),
+				getMiddleware(commando, subCommandMethod),
 				true
 		);
 	}
@@ -181,18 +181,27 @@ public class CommandWrapper {
 	}
 	
 	@NotNull
-	public static List<Class<? extends CommandMiddleware>> getMiddleware(@NotNull Method method) {
+	public static List<CommandMiddleware> getMiddleware(@NotNull Commando commando,
+			@NotNull Method method) {
 		if (!method.isAnnotationPresent(UseMiddleware.class)) {
 			return new ArrayList<>();
 		}
-		return Arrays.asList(method.getAnnotation(UseMiddleware.class).value());
+		return Arrays.stream(method.getAnnotation(UseMiddleware.class).value())
+				.map(commando::getMiddleware)
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList());
 	}
 	
 	@NotNull
-	public static List<Class<? extends CommandMiddleware>> getMiddleware(@NotNull Command command) {
-		List<Class<? extends CommandMiddleware>> middleware = new ArrayList<>(command.getMiddleware());
+	public static List<CommandMiddleware> getMiddleware(@NotNull Commando commando, @NotNull Command command) {
+		List<CommandMiddleware> middleware = new ArrayList<>(command.getMiddleware());
 		if (command.getClass().isAnnotationPresent(UseMiddleware.class)) {
-			middleware.addAll(Arrays.asList(command.getClass().getAnnotation(UseMiddleware.class).value()));
+			middleware.addAll(
+					Arrays.stream(command.getClass().getAnnotation(UseMiddleware.class).value())
+							.map(commando::getMiddleware)
+							.filter(Objects::nonNull)
+							.collect(Collectors.toList())
+			);
 		}
 		return middleware;
 	}
@@ -242,17 +251,16 @@ public class CommandWrapper {
 		return subCommand;
 	}
 	
-	public List<Class<? extends CommandMiddleware>> getInheritedMiddleware() {
+	public List<CommandMiddleware> getInheritedMiddleware() {
 		return inheritedMiddleware;
 	}
 	
-	public List<Class<? extends CommandMiddleware>> getMiddleware() {
+	public List<CommandMiddleware> getMiddleware() {
 		return middleware;
 	}
 	
-	public List<Class<? extends CommandMiddleware>> getActingMiddleware() {
-		ArrayList<Class<? extends CommandMiddleware>> actingMiddleware = new ArrayList<>(
-				commando.getDefaultMiddlewareChain());
+	public List<CommandMiddleware> getActingMiddleware() {
+		List<CommandMiddleware> actingMiddleware = new ArrayList<>(commando.getDefaultMiddlewareChain());
 		actingMiddleware.addAll(inheritedMiddleware);
 		actingMiddleware.addAll(middleware);
 		return actingMiddleware;

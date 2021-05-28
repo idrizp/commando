@@ -16,8 +16,8 @@ public class PaperSender implements CommandoSender<CommandSender> {
 	
 	@Override
 	public void sendMessage(@NotNull Message message) {
-		if (message instanceof PaperMessage paperMessage) {
-			commandSender.sendMessage(paperMessage.getComponent());
+		if (message instanceof PaperMessage) {
+			commandSender.sendMessage(((PaperMessage) message).getComponent());
 		}
 	}
 	

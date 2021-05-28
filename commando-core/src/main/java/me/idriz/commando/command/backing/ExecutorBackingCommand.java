@@ -18,7 +18,6 @@ import me.idriz.commando.middleware.CommandMiddleware;
 import me.idriz.commando.middleware.CommandMiddleware.MiddlewareContext;
 import me.idriz.commando.middleware.CommandMiddleware.SenderCommandMiddleware;
 import me.idriz.commando.sender.CommandoSender;
-import me.idriz.commando.util.ArrayUtils;
 import me.idriz.commando.wrapper.CommandWrapper;
 import org.jetbrains.annotations.NotNull;
 
@@ -210,12 +209,13 @@ public class ExecutorBackingCommand<T extends CommandoSender<?>> {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void traverseMiddleware(
 			T sender,
 			String[] args,
 			MiddlewareContext context,
 			int index,
-			List<Class<? extends CommandMiddleware>> list
+			List<CommandMiddleware> list
 	) {
 		if (context == null) {
 			context = new MiddlewareContext();
@@ -224,18 +224,22 @@ public class ExecutorBackingCommand<T extends CommandoSender<?>> {
 			executeCommand(sender, args, context);
 			return;
 		}
-		SenderCommandMiddleware<T> middleware = (SenderCommandMiddleware<T>) commando.getMiddleware(list.get(index));
-		if (middleware == null) {
-			throw new NullPointerException("Couldn't find middleware of type " + list.get(index).getSimpleName());
+		try {
+			SenderCommandMiddleware<T> middleware = (SenderCommandMiddleware<T>) list.get(index);
+			
+			MiddlewareContext finalContext = context;
+			middleware.onExecute(commandWrapper, sender, args, context, () -> {
+				if (index == list.size() - 1) {
+					executeCommand(sender, args, finalContext);
+					return;
+				}
+				traverseMiddleware(sender, args, finalContext, index + 1, list);
+			});
+		} catch (ClassCastException exception) {
+			throw new IllegalStateException(
+					list.get(index).getClass().getSimpleName() + " must be an implementation of SenderCommandMiddleware"
+			);
 		}
-		MiddlewareContext finalContext = context;
-		middleware.onExecute(commandWrapper, sender, args, context, () -> {
-			if (index == list.size() - 1) {
-				executeCommand(sender, args, finalContext);
-				return;
-			}
-			traverseMiddleware(sender, args, finalContext, index + 1, list);
-		});
 	}
 	
 }

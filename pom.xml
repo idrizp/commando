@@ -6,11 +6,23 @@
 
   <groupId>me.idriz.commando</groupId>
   <artifactId>commando-parent</artifactId>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.2-SNAPSHOT</version>
   <properties>
-    <maven.compiler.source>16</maven.compiler.source>
-    <maven.compiler.target>16</maven.compiler.target>
+    <java.version>11</java.version>
   </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>${java.version}</source>
+          <target>${java.version}</target>
+        </configuration>
+        <version>3.8.1</version>
+      </plugin>
+    </plugins>
+  </build>
   <modules>
     <module>commando-core</module>
     <module>commando-paper</module>
