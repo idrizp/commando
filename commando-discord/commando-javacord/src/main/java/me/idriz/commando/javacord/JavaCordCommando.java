@@ -23,31 +23,32 @@ public class JavaCordCommando extends Commando {
 	public JavaCordCommando(DiscordApi api, String commandPrefix, boolean deleteMessageAfterCommand) {
 		this.commandPrefix = commandPrefix;
 		api.addMessageCreateListener(messageEvent -> {
-			if (!messageEvent.getMessageContent().startsWith(getCommandPrefix())) {
-				return;
-			}
-			String command = messageEvent.getMessageContent().substring(getCommandPrefix().length());
-			
-			String[] args = command.split(" ");
-			
-			Command found = getCommands().get(args[0].toLowerCase());
-			if (found == null) {
-				return;
-			}
-			
-			ExecutorBackingCommand<MessageAuthorSender> backingCommand = backingCommands.get(found);
-			if (backingCommand == null) {
-				throw new IllegalStateException("Didn't find backing command registered to command " + args[0]);
-			}
-			
-			backingCommand.onExecute(new MessageAuthorSender(messageEvent.getMessageAuthor()),
-					Arrays.copyOfRange(args, 1, args.length));
-			
-			if (deleteMessageAfterCommand) {
-				messageEvent.deleteMessage().exceptionally(throwable -> {
-					throwable.printStackTrace();
-					return null;
-				});
+			try {
+				if (!messageEvent.getMessageContent().startsWith(getCommandPrefix())) {
+					return;
+				}
+				String command = messageEvent.getMessageContent().substring(getCommandPrefix().length());
+				
+				String[] args = command.split(" ");
+				
+				Command found = getCommands().get(args[0].toLowerCase());
+				if (found == null) {
+					return;
+				}
+				
+				ExecutorBackingCommand<MessageAuthorSender> backingCommand = backingCommands.get(found);
+				if (backingCommand == null) {
+					throw new IllegalStateException("Didn't find backing command registered to command " + args[0]);
+				}
+				
+				backingCommand.onExecute(new MessageAuthorSender(messageEvent.getMessageAuthor()),
+						Arrays.copyOfRange(args, 1, args.length));
+				
+				if (deleteMessageAfterCommand) {
+					messageEvent.deleteMessage();
+				}
+			} catch(Exception exception) {
+				exception.printStackTrace();
 			}
 		});
 	}

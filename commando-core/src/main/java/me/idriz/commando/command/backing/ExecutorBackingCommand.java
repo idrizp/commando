@@ -18,6 +18,7 @@ import me.idriz.commando.middleware.CommandMiddleware;
 import me.idriz.commando.middleware.CommandMiddleware.MiddlewareContext;
 import me.idriz.commando.middleware.CommandMiddleware.SenderCommandMiddleware;
 import me.idriz.commando.sender.CommandoSender;
+import me.idriz.commando.util.PrimitiveUtils;
 import me.idriz.commando.wrapper.CommandWrapper;
 import org.jetbrains.annotations.NotNull;
 
@@ -200,9 +201,13 @@ public class ExecutorBackingCommand<T extends CommandoSender<?>> {
 			
 			MiddlewareData data = parameter.getAnnotation(MiddlewareData.class);
 			Object value = context.get(data.value());
-			if (value != null && !parameter.getType().isAssignableFrom(value.getClass())) {
-				throw new IllegalStateException(
-						"Mismatch between MiddlewareData parameter type " + parameter.getType().getSimpleName());
+			Class<?> type = parameter.getType();
+			if (value != null) {
+				boolean equalPrimitives = (type.isPrimitive() && PrimitiveUtils.areEqualPrimitives(value.getClass(), type));
+				if (!equalPrimitives && (!parameter.getType().isAssignableFrom(value.getClass()))) {
+					throw new IllegalStateException(
+							"Mismatch between MiddlewareData parameter type " + parameter.getType().getSimpleName());
+				}
 			}
 			
 			objects.set(i, value);
