@@ -101,6 +101,8 @@ public class ExecutorBackingCommand<T extends CommandoSender<?>> {
 				return;
 			}
 		}
+		
+		fillOptionalArguments(objects, sender, method, pureArgs);
 		try {
 			method.invoke(commandWrapper.getCommand(), objects.toArray(new Object[0]));
 		} catch (IllegalAccessException | InvocationTargetException e) {
@@ -144,18 +146,30 @@ public class ExecutorBackingCommand<T extends CommandoSender<?>> {
 		return list.toArray(new String[0]);
 	}
 	
+	@SuppressWarnings("unchecked")
+	private void fillOptionalArguments(List<Object> objects, T sender, Method method, String[] args) {
+		Parameter[] parameters = method.getParameters();
+		String[] empty = new String[0];
+		for (int i = 0; i < parameters.length; i++) {
+			Parameter parameter = parameters[i];
+			if (parameter.isAnnotationPresent(OptionalArgument.class) && objects.get(i) == null) {
+				OptionalArgument annotation = parameter.getAnnotation(OptionalArgument.class);
+				TypeAdapter<?, T> adapter = (TypeAdapter<?, T>) commandWrapper.getAdapter(parameter);
+				if (adapter == null) {
+					throw new NullPointerException("Didn't find adapter for parameter " + parameter.getName());
+				}
+				String[] copy = i < args.length ? Arrays.copyOfRange(args, i, args.length) : empty;
+				objects.set(i, adapter.adapt(sender, parameter, annotation.value(), args, copy));
+			}
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
 	private boolean fillParameter(List<Object> objects, T sender, String[] args, String currentArgument,
 			int currentArgumentIndex, int parameterIndex,
 			Parameter parameter) {
-		TypeAdapter<?, T> adapter;
+		TypeAdapter<?, T> adapter = (TypeAdapter<?, T>) commandWrapper.getAdapter(parameter);
 		String typeName = parameter.getType().getSimpleName();
-		if (parameter.isAnnotationPresent(UseAdapter.class)) {
-			UseAdapter adapterAnnotation = parameter.getAnnotation(UseAdapter.class);
-			adapter = (TypeAdapter<?, T>) commando.getCustomAdapter(adapterAnnotation.value());
-			typeName = adapterAnnotation.value().getSimpleName();
-		} else {
-			adapter = commando.getTypeAdapter(parameter.getType());
-		}
 		if (adapter == null) {
 			throw new NullPointerException("Couldn't find adapter for parameter " + parameter.getName() + ": " + typeName);
 		}

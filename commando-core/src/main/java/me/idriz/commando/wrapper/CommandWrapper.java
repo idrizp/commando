@@ -10,11 +10,13 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import me.idriz.commando.Commando;
+import me.idriz.commando.adapter.TypeAdapter;
 import me.idriz.commando.command.Command;
 import me.idriz.commando.command.Command.Flag;
 import me.idriz.commando.command.Command.Info;
 import me.idriz.commando.command.Command.MiddlewareData;
 import me.idriz.commando.command.Command.OptionalArgument;
+import me.idriz.commando.command.Command.UseAdapter;
 import me.idriz.commando.command.Command.UseMiddleware;
 import me.idriz.commando.message.Message;
 import me.idriz.commando.middleware.CommandMiddleware;
@@ -282,6 +284,15 @@ public class CommandWrapper {
 					.count();
 		}
 		return requiredParameterCount;
+	}
+	
+	@Nullable
+	public TypeAdapter<?, ?> getAdapter(Parameter parameter) {
+		if (parameter.isAnnotationPresent(UseAdapter.class)) {
+			UseAdapter annotation = parameter.getAnnotation(UseAdapter.class);
+			return commando.getCustomAdapter(annotation.value());
+		}
+		return commando.getTypeAdapter(parameter.getType());
 	}
 	
 	public List<Parameter> getArguments() {

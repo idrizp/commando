@@ -16,7 +16,7 @@ public class WaveCommand implements Command {
 	}
 	
 	@Info("test")
-	public void onTest(MessageAuthor author, int number) {
+	public void onTest(MessageAuthor author, @OptionalArgument("5") int number) {
 		new MessageBuilder()
 				.append(":middle_finger: Don't test me. I've told you " + number + " time(s).")
 				.send(author.getMessage().getChannel());
