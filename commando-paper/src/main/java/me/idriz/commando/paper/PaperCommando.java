@@ -42,10 +42,12 @@ public class PaperCommando extends Commando {
 	public CommandWrapper registerCommand(Command command) {
 		CommandWrapper wrapper = super.registerCommand(command);
 		ExecutorBackingCommand<PaperSender> executorBackingCommand = new ExecutorBackingCommand<>(this, wrapper);
+		
+		List<String> aliasesList = Arrays.asList(wrapper.getAliases());
 		plugin.getServer().getCommandMap().register(plugin.getName(), new org.bukkit.command.Command(wrapper.getName()) {
 			@Override
 			public @NotNull List<String> getAliases() {
-				return Arrays.asList(wrapper.getAliases());
+				return aliasesList;
 			}
 			
 			@Override
