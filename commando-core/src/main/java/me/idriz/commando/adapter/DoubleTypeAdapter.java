@@ -3,6 +3,7 @@ package me.idriz.commando.adapter;
 import java.lang.reflect.Parameter;
 import me.idriz.commando.Commando;
 import me.idriz.commando.sender.CommandoSender;
+import me.idriz.commando.util.NumericTypeAdapterUtils;
 
 public class DoubleTypeAdapter<T extends CommandoSender<?>> implements TypeAdapter<Double, T> {
 	
@@ -15,7 +16,7 @@ public class DoubleTypeAdapter<T extends CommandoSender<?>> implements TypeAdapt
 	@Override
 	public Double adapt(T sender, Parameter parameter, String argument, String[] originalArgs, String[] args) {
 		try {
-			return Double.parseDouble(argument);
+			return NumericTypeAdapterUtils.withRangeValidation(parameter, Double.parseDouble(argument));
 		} catch(NumberFormatException exception) {
 			return null;
 		}

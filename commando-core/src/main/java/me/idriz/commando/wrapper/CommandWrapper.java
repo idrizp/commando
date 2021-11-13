@@ -44,7 +44,6 @@ public class CommandWrapper {
 	
 	private final boolean subCommand;
 	
-	private final List<Parameter> arguments = new ArrayList<>();
 	private int requiredParameterCount = -1;
 	
 	public CommandWrapper(
@@ -294,8 +293,5 @@ public class CommandWrapper {
 		}
 		return commando.getTypeAdapter(parameter.getType());
 	}
-	
-	public List<Parameter> getArguments() {
-		return arguments;
-	}
+
 }

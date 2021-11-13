@@ -3,6 +3,7 @@ package me.idriz.commando.adapter;
 import java.lang.reflect.Parameter;
 import me.idriz.commando.Commando;
 import me.idriz.commando.sender.CommandoSender;
+import me.idriz.commando.util.NumericTypeAdapterUtils;
 
 public class IntegerTypeAdapter<T extends CommandoSender<?>> implements TypeAdapter<Integer, T> {
 	
@@ -15,7 +16,7 @@ public class IntegerTypeAdapter<T extends CommandoSender<?>> implements TypeAdap
 	@Override
 	public Integer adapt(T sender, Parameter parameter, String argument, String[] originalArgs, String[] args) {
 		try {
-			return Integer.parseInt(argument);
+			return NumericTypeAdapterUtils.withRangeValidation(parameter, Integer.parseInt(argument));
 		} catch(NumberFormatException exception) {
 			return null;
 		}

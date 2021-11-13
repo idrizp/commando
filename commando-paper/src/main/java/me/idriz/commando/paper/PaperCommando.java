@@ -7,6 +7,7 @@ import me.idriz.commando.command.Command;
 import me.idriz.commando.command.backing.ExecutorBackingCommand;
 import me.idriz.commando.message.Message;
 import me.idriz.commando.paper.command.adapter.impl.PlayerTypeAdapter;
+import me.idriz.commando.paper.completion.PaperCommandCompletion;
 import me.idriz.commando.paper.message.PaperMessageBuilder;
 import me.idriz.commando.paper.middleware.PaperPermissionMiddleware;
 import me.idriz.commando.paper.middleware.PaperSenderMiddleware;
@@ -42,20 +43,24 @@ public class PaperCommando extends Commando {
 	public CommandWrapper registerCommand(Command command) {
 		CommandWrapper wrapper = super.registerCommand(command);
 		ExecutorBackingCommand<PaperSender> executorBackingCommand = new ExecutorBackingCommand<>(this, wrapper);
-		
+
 		List<String> aliasesList = Arrays.asList(wrapper.getAliases());
-		plugin.getServer().getCommandMap().register(plugin.getName(), new org.bukkit.command.Command(wrapper.getName()) {
+		org.bukkit.command.Command bukkitCommand = new org.bukkit.command.Command(wrapper.getName()) {
 			@Override
 			public @NotNull List<String> getAliases() {
 				return aliasesList;
 			}
-			
+
 			@Override
 			public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, @NotNull String[] args) {
 				executorBackingCommand.onExecute(new PaperSender(sender), args);
 				return true;
 			}
-		});
+		};
+
+		plugin.getServer().getCommandMap().register(plugin.getName(), bukkitCommand);
+		new PaperCommandCompletion(wrapper, command, bukkitCommand, plugin).setup();
+
 		return wrapper;
 	}
 }

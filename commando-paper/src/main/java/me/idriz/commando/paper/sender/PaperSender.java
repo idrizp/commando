@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class PaperSender implements CommandoSender<CommandSender> {
 	
-	private CommandSender commandSender;
+	private final CommandSender commandSender;
 	
 	public PaperSender(CommandSender commandSender) {
 		this.commandSender = commandSender;
